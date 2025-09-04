@@ -16,7 +16,6 @@ if (!userId) {
 
       if (error || !data) throw error;
 
-      // Se senha ainda não cadastrada, redireciona para primeiro acesso
       if (!data.senha) {
         window.location.href = 'primeiro_acesso.html';
         return;
@@ -37,7 +36,6 @@ if (!userId) {
 
   getUserInfo();
 
-  // Logout
   const logoutBtn = document.getElementById('logout-btn');
   logoutBtn.addEventListener('click', () => {
     localStorage.removeItem('userId');

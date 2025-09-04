@@ -20,6 +20,12 @@ loginForm.addEventListener('submit', async (e) => {
       return;
     }
 
+    if (!userData.senha) {
+      alert('Primeiro acesso necessário. Complete o cadastro.');
+      window.location.href = 'primeiro_acesso.html';
+      return;
+    }
+
     if (userData.senha !== password) {
       alert('Senha incorreta.');
       return;

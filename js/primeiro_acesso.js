@@ -17,13 +17,14 @@ form.addEventListener('submit', async (e) => {
   }
 
   try {
+    // Verifica se o UUID existe
     const { data: userData, error } = await supabase
       .from('usuarios')
       .select('*')
       .eq('random_id', uuid)
       .single();
 
-    if (error) {
+    if (error || !userData) {
       alert('ID inválido ou não cadastrado.');
       return;
     }
@@ -32,24 +33,21 @@ form.addEventListener('submit', async (e) => {
       alert('Senha já cadastrada. Faça login.');
       window.location.href = 'index.html';
       return;
-}
-    // Atualiza os dados do usuário
-const { error: updateError } = await supabase
-  .from('usuarios')
-  .update({
-    nome: nome,
-    data_nascimento: data_nascimento,
-    senha: password
-  })
-  .eq('random_id', uuid);
+    }
 
-  if (updateError) {
-    alert('Erro ao criar senha. Tente novamente.');
-    return;
-  }
+    const { error: updateError } = await supabase
+      .from('usuarios')
+      .update({
+        nome: nome,
+        data_nascimento: data_nascimento,
+        senha: password
+      })
+      .eq('random_id', uuid);
 
-alert('Conta criada com sucesso! Faça login.');
-window.location.href = 'index.html';
+    if (updateError) {
+      alert('Erro ao criar senha. Tente novamente.');
+      return;
+    }
 
     alert('Conta criada com sucesso! Faça login.');
     window.location.href = 'index.html';
