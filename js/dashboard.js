@@ -21,10 +21,3 @@ if (!userId) {
     `;
   }
 }
-
-// Logout
-document.getElementById('logout-btn').addEventListener('click', async () => {
-  await supabase.auth.signOut();
-  localStorage.removeItem('userId');
-  window.location.href = 'index.html';
-});
