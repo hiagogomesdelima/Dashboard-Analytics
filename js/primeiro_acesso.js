@@ -1,4 +1,5 @@
-import { supabase } from '../supabase.js';
+// js/primeiro_acesso.js
+import { supabase } from './supabase.js';
 
 const form = document.getElementById('primeiro-acesso-form');
 
@@ -6,52 +7,35 @@ form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  const confirmPassword = document.getElementById('confirm_password').value;
   const nome = document.getElementById('nome').value;
   const data_nascimento = document.getElementById('data_nascimento').value;
+  const password = document.getElementById('password').value;
+  const confirm = document.getElementById('confirm_password').value;
 
-  if (password !== confirmPassword) {
-    alert('As senhas não coincidem.');
+  if (password !== confirm) {
+    alert('Senhas não coincidem');
     return;
   }
 
-  try {
-    // Criar usuário no Auth
-    const { data: userData, error: signUpError } = await supabase.auth.signUp({
-      email: email,
-      password: password
-    });
+  const { data: signUpData, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
 
-    if (signUpError) {
-      alert(signUpError.message);
-      return;
-    }
-
-    // Criar registro extra na tabela usuarios
-    const { error: insertError } = await supabase
-      .from('usuarios')
-      .insert([{
-        id: userData.user.id,
-        nome: nome,
-        data_nascimento: data_nascimento
-      }]);
-
-    if (insertError) {
-      alert(insertError.message);
-      return;
-    }
-
-    alert('Conta criada com sucesso! Confirme seu email e faça login.');
-    window.location.href = 'index.html';
-
-  } catch (err) {
-    console.error(err);
-    alert('Erro no cadastro.');
+  if (error) {
+    alert('Erro ao criar conta: ' + error.message);
+    return;
   }
-});
 
-const { data: userData, error } = await supabase.auth.signUp({
-  email: 'teste@teste.com',
-  password: '123456'
+  const user = signUpData.user;
+
+  // Após cadastro, criar entrada na tabela usuarios (caso não use trigger)
+  await supabase.from('usuarios').insert({
+    id: user.id,
+    nome,
+    data_nascimento
+  });
+
+  alert('Conta criada com sucesso!');
+  window.location.href = 'index.html';
 });
