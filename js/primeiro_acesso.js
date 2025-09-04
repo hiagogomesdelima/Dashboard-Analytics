@@ -50,3 +50,8 @@ form.addEventListener('submit', async (e) => {
     alert('Erro no cadastro.');
   }
 });
+
+const { data: userData, error } = await supabase.auth.signUp({
+  email: 'teste@teste.com',
+  password: '123456'
+});
